@@ -30,27 +30,28 @@ export default function Screen() {
     <>
       <Stack.Screen options={SCREEN_OPTIONS} />
       <View className="flex-1 items-center justify-center gap-8 p-4">
-        <Image source={LOGO[colorScheme ?? 'light']} style={IMAGE_STYLE} resizeMode="contain" />
         <View className="gap-2 p-4">
           <Text className="ios:text-foreground font-mono text-sm text-muted-foreground">
-            1. Edit <Text variant="code">app/index.tsx</Text> to get started.
-          </Text>
-          <Text className="ios:text-foreground font-mono text-sm text-muted-foreground">
-            2. Save to see your changes instantly.
+            Control de <Text variant="code">Robot Movil</Text>.
           </Text>
         </View>
-        <View className="flex-row gap-2">
-          <Link href="https://reactnativereusables.com" asChild>
+        <View className="">
             <Button>
-              <Text>Browse the Docs</Text>
+              <Text>Adelante 5seg</Text>
             </Button>
-          </Link>
-          <Link href="https://github.com/founded-labs/react-native-reusables" asChild>
-            <Button variant="ghost">
-              <Text>Star the Repo</Text>
-              <Icon as={StarIcon} />
+        </View>
+        <View className="flex-row gap-2">
+            <Button>
+              <Text>Giro Derecha</Text>
             </Button>
-          </Link>
+            <Button>
+              <Text>Giro Izquierda</Text>
+            </Button>
+        </View>
+        <View className="">
+              <Button>
+              <Text>Atras 5seg</Text>
+            </Button>
         </View>
       </View>
     </>
