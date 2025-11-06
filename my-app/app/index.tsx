@@ -6,6 +6,7 @@ import { MoonStarIcon, StarIcon, SunIcon } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import * as React from 'react';
 import { Image, type ImageStyle, View } from 'react-native';
+import axios from 'axios';
 
 const LOGO = {
   light: require('@/assets/images/react-native-reusables-light.png'),
@@ -25,7 +26,13 @@ const IMAGE_STYLE: ImageStyle = {
 
 export default function Screen() {
   const { colorScheme } = useColorScheme();
-
+  const enviarOrden = async () => {
+    try {
+      await axios.post('http://10.56.5.123/control_post', { dir: 'r' });
+    } catch {
+      console.log('error');
+    }
+  };
   return (
     <>
       <Stack.Screen options={SCREEN_OPTIONS} />
@@ -36,22 +43,22 @@ export default function Screen() {
           </Text>
         </View>
         <View className="">
-            <Button>
-              <Text>Adelante 5seg</Text>
-            </Button>
+          <Button onPressIn={enviarOrden}>
+            <Text>Adelante 5seg</Text>
+          </Button>
         </View>
         <View className="flex-row gap-2">
-            <Button>
-              <Text>Giro Derecha</Text>
-            </Button>
-            <Button>
-              <Text>Giro Izquierda</Text>
-            </Button>
+          <Button>
+            <Text>Giro Derecha</Text>
+          </Button>
+          <Button>
+            <Text>Giro Izquierda</Text>
+          </Button>
         </View>
         <View className="">
-              <Button>
-              <Text>Atras 5seg</Text>
-            </Button>
+          <Button>
+            <Text>Atras 5seg</Text>
+          </Button>
         </View>
       </View>
     </>
