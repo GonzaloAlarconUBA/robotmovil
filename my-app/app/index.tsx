@@ -76,9 +76,37 @@ export default function Screen() {
     }
   };
 
-  const enviarOrden = async () => {
+  const enviarOrdenAd = async () => {
     try {
-      await axios.post('http://10.56.5.123/control_post', { dir: 'r' });
+      await axios.post('http://10.56.5.123/add', { dir: 'f' });
+    } catch {
+      console.log('error');
+    }
+  };
+  const enviarOrdenI = async () => {
+    try {
+      await axios.post('http://10.56.5.123/add', { dir: 'l' });
+    } catch {
+      console.log('error');
+    }
+  };
+  const enviarOrdenD = async () => {
+    try {
+      await axios.post('http://10.56.5.123/add', { dir: 'r' });
+    } catch {
+      console.log('error');
+    }
+  };
+  const enviarOrdenAt = async () => {
+    try {
+      await axios.post('http://10.56.5.123/add', { dir: 'b' });
+    } catch {
+      console.log('error');
+    }
+  };
+  const enviarOrdenR = async () => {
+    try {
+      await axios.post('http://10.56.5.123/run', { dir: 'b' });
     } catch {
       console.log('error');
     }
@@ -160,23 +188,26 @@ export default function Screen() {
         </Button>
 
         <View className="">
-          <Button onPressIn={enviarOrden}>
+          <Button onPressIn={enviarOrdenAd}>
             <Text>Adelante 5seg</Text>
           </Button>
         </View>
         <View className="flex-row gap-2">
-          <Button>
+          <Button onPressIn={enviarOrdenD}>
             <Text>Giro Derecha</Text>
           </Button>
-          <Button>
+          <Button onPressIn={enviarOrdenI}>
             <Text>Giro Izquierda</Text>
           </Button>
         </View>
         <View className="">
-          <Button>
+          <Button onPressIn={enviarOrdenAt}>
             <Text>Atras 5seg</Text>
           </Button>
         </View>
+        <Button onPressIn={enviarOrdenR}>
+          <Text>Comenzar movimiento</Text>
+        </Button>
       </View>
     </>
   );
