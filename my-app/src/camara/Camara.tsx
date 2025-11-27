@@ -3,6 +3,7 @@ import { delay } from '@/utils';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useEffect, useRef, useState } from 'react';
 import { View, Text } from 'react-native';
+import axios from 'axios';
 
 export const Camara = () => {
   const cameraRef = useRef<CameraView>(null);
@@ -11,52 +12,62 @@ export const Camara = () => {
   const [photo, setPhoto] = useState<string | null>(null); // Para mostrar la *última* foto si quieres
 
   const [permission, requestPermission] = useCameraPermissions();
-  // 2. Referencia al componente de cámara (sin cambios)
 
-  // 3. ESTADOS ACTUALIZADOS
-  // (Eliminamos showCamera)
-
-  // 4. Pide permiso al cargar el componente (sin cambios)
   useEffect(() => {
     requestPermission();
   }, []);
+
   const capturarImagenes = async () => {
     if (!cameraRef.current) {
       console.error('Referencia de cámara no disponible.');
-      setIsProcessing(false); // Hay un problema, re-habilitar botones
+      setIsProcessing(false);
       return;
     }
 
-    const uris: string[] = [];
     const options = { quality: 0.5, base64: false };
 
     try {
-      // Bucle para tomar 3 fotos
       for (let i = 0; i < 3; i++) {
-        console.log(`Tomando foto autónoma ${i + 1}...`);
+        console.log(`--- Iniciando ciclo ${i + 1} de 3 ---`);
+
         const pic = await cameraRef.current.takePictureAsync(options);
+
         if (pic) {
-          uris.push(pic.uri);
-          // Opcional: mostrar la última foto en la UI
-          if (i === 2) {
-            setPhoto(pic.uri);
-          }
+          if (i === 2) setPhoto(pic.uri);
+          const formData = new FormData();
+          // formData.append('dir', 'f');
+
+          const fileData = {
+            uri: pic.uri,
+            type: 'image/jpeg',
+            name: `foto_${i}.jpg`,
+          };
+
+          formData.append('file', fileData as any);
+          console.log(`Enviando foto ${i + 1} a 172.25.81.50...`);
+
+          await axios.post('http://10.56.2.44:8000/upload_image/', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+
+          console.log(`Foto ${i + 1} subida con éxito.`);
         }
-        // Esperar 1 segundo
+
         if (i < 2) {
           await delay(1000);
         }
       }
-      console.log('Ráfaga autónoma completada:', uris);
+
+      console.log('Ráfaga y subida completada.');
     } catch (e) {
-      console.error('Error durante la ráfaga autónoma', e);
+      console.error('Error durante el proceso de captura/subida', e);
     } finally {
-      // Al terminar (con o sin error), re-habilitamos los botones
       setIsProcessing(false);
       console.log('Proceso terminado.');
     }
   };
-  // --- Vistas de permisos (sin cambios) ---
   if (!permission) {
     return (
       <View className="flex-1 items-center justify-center">
@@ -75,6 +86,7 @@ export const Camara = () => {
       </View>
     );
   }
+
   return (
     <View>
       <Text className="ios:text-foreground font-mono text-sm text-muted-foreground">camara</Text>
@@ -87,6 +99,9 @@ export const Camara = () => {
           setIsCameraReady(true);
         }}
       />
+      <Button onPress={capturarImagenes}>
+        <Text>Capturar imagenes</Text>
+      </Button>
     </View>
   );
 };

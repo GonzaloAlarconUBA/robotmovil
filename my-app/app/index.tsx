@@ -10,7 +10,7 @@ import * as React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useState } from 'react';
 import axios from 'axios';
-import Camara from '@/src/components/Camara';
+import Camara from '@/src/camara/Camara';
 
 const SCREEN_OPTIONS = {
   title: 'React Native Reusables',
@@ -22,10 +22,10 @@ export default function Screen() {
   const [isProcessing, setIsProcessing] = useState(false); // Para deshabilitar botones
   const enviarOrdenes = async () => {
     try {
-      await axios.post('http://10.56.16.23/add', { dir: 'f' });
-      await axios.post('http://10.56.16.23/run');
-      await axios.post('http://10.56.16.23/add', { dir: 'f' });
-      await axios.post('http://10.56.16.23/run');
+      await axios.post('http://10.56.5.251/add', { dir: 'f' });
+      await axios.post('http://10.56.5.251/run');
+      await axios.post('http://10.56.5.251/add', { dir: 'f' });
+      await axios.post('http://10.56.5.251/run');
     } catch {
       console.log('error');
     }
@@ -38,9 +38,9 @@ export default function Screen() {
       <Layout>
         <Camara />
 
-        <Button onPress={enviarOrdenes} disabled={isProcessing}>
+        {/* <Button onPress={enviarOrdenes} disabled={isProcessing}>
           <Text>{isProcessing ? 'Procesando...' : 'Comenzar movimiento'}</Text>
-        </Button>
+        </Button> */}
       </Layout>
     </>
   );
@@ -77,4 +77,3 @@ const styles = StyleSheet.create({
     opacity: 0, // Hacerla invisible
   },
 });
-
