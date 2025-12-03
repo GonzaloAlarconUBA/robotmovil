@@ -26,6 +26,9 @@ export const Camara = () => {
 
     const options = { quality: 0.5, base64: false };
 
+    const runId = new Date().getTime().toString(); 
+    console.log(`ID de Recorrido para esta ráfaga: ${runId}`);
+
     try {
       for (let i = 0; i < 3; i++) {
         console.log(`--- Iniciando ciclo ${i + 1} de 3 ---`);
@@ -36,6 +39,7 @@ export const Camara = () => {
           if (i === 2) setPhoto(pic.uri);
           const formData = new FormData();
           // formData.append('dir', 'f');
+          formData.append('run_id', runId);
 
           const fileData = {
             uri: pic.uri,
@@ -46,7 +50,7 @@ export const Camara = () => {
           formData.append('file', fileData as any);
           console.log(`Enviando foto ${i + 1} a 172.25.81.50...`);
 
-          await axios.post('http://10.56.2.44:8000/upload_image/', formData, {
+          await axios.post('http://10.56.2.56:8000/upload_image/', formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
@@ -100,7 +104,7 @@ export const Camara = () => {
         }}
       />
       <Button onPress={capturarImagenes}>
-        <Text>Capturar imagenes</Text>
+        <Text>Comenzar Recorrido</Text>
       </Button>
     </View>
   );

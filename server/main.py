@@ -1,34 +1,43 @@
 from typing import Union
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Form
 from pathlib import Path
 import shutil
+from datetime import datetime
 
 app = FastAPI()
 
-# Directorio donde se guardarán las imágenes
-IMAGE_DIR = Path("uploaded_images")
-IMAGE_DIR.mkdir(exist_ok=True) # Crea el directorio si no existe
+BASE_IMAGE_DIR = Path("uploaded_images")
+BASE_IMAGE_DIR.mkdir(exist_ok=True)
 
 @app.post("/upload_image/")
-async def upload_image(file: UploadFile = File(...)):
-    # 1. Obtener el nombre del archivo
-    file_location = IMAGE_DIR / file.filename
+async def upload_image(file: UploadFile = File(...), run_id: str = Form(...)):
+    now = datetime.now()
     
-    # 2. Guardar el archivo en el servidor
+    day_folder_name = now.strftime("%Y-%m-%d")
+    
+    time_folder_name = run_id
+    
+    day_dir = BASE_IMAGE_DIR / day_folder_name
+    run_dir = day_dir / time_folder_name 
+    
+    run_dir.mkdir(parents=True, exist_ok=True)
+    
+    file_location = run_dir / file.filename
+
     try:
         with open(file_location, "wb") as buffer:
-            # Usa shutil.copyfileobj para copiar el contenido del archivo subido 
-            # al archivo local, manejando eficientemente archivos grandes.
             shutil.copyfileobj(file.file, buffer) 
     except Exception as e:
         return {"message": "Hubo un error al subir el archivo", "error": str(e)}
     finally:
-        # Asegúrate de cerrar el archivo subido
         await file.close()
 
-    return {"filename": file.filename, "message": "Imagen subida exitosamente"}
+    return {
+        "filename": file.filename, 
+        "path": str(file_location.relative_to(BASE_IMAGE_DIR)),
+        "message": "Imagen subida exitosamente"
+    }
 
-# Si usas Uvicorn para correr tu app, el comando sería: uvicorn main:app --reload
 
 @app.get("/")
 def read_root():

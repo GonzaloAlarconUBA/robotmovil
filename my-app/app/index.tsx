@@ -37,7 +37,6 @@ export default function Screen() {
 
       <Layout>
         <Camara />
-
         {/* <Button onPress={enviarOrdenes} disabled={isProcessing}>
           <Text>{isProcessing ? 'Procesando...' : 'Comenzar movimiento'}</Text>
         </Button> */}
